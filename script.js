@@ -1,19 +1,10 @@
 (async function () {
-  const bookEl = document.getElementById('book');
-  const bookScaleEl = document.getElementById('bookScale');
-  const bookWrapEl = document.querySelector('.book-wrap');
   const status = document.getElementById('status');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const firstBtn = document.getElementById('firstBtn');
-  const lastBtn = document.getElementById('lastBtn');
-  const slider = document.getElementById('pageSlider');
-  const pageNumEl = document.getElementById('pageNum');
-  const pageTotalEl = document.getElementById('pageTotal');
+  const pagesEl = document.getElementById('pages');
 
   function setStatus(msg) {
     status.textContent = msg;
-    status.style.display = msg ? 'flex' : 'none';
+    status.style.display = msg ? 'block' : 'none';
   }
 
   // Detecta as imagens sozinho, tentando carregar page-01, page-02, ...
@@ -54,7 +45,7 @@
   if (list.length < 2) {
     setStatus(
       'Nenhuma imagem encontrada.\n' +
-      'Coloque "page-01.jpg", "page-02.jpg", ... na mesma pasta do index.html\n' +
+      'Coloque "page-01.jpg", "page-02.jpg", ... (1240x1754px) na mesma pasta do index.html\n' +
       '(no mínimo 2: capa + contracapa) e recarregue a página.'
     );
     return;
@@ -62,78 +53,16 @@
 
   setStatus('');
 
-  // === Motor de flip: StPageFlip (mesmo tipo de curva/curvatura do AnyFlip) ===
-  // Tamanho fixo em pixels (nítido) + escala via CSS transform calculada em JS,
-  // assim o livro sempre cabe na tela disponível, sem depender do cálculo
-  // "stretch" da própria lib (que deriva a altura da largura e pode estourar
-  // em janelas baixas).
-  const PAGE_W = 1000;
-  const PAGE_H = 1414; // mantém a proporção 1240×1754 da arte
+  list.forEach((src, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'page';
 
-  const pageFlip = new St.PageFlip(bookEl, {
-    width: PAGE_W,
-    height: PAGE_H,
-    size: 'fixed',
-    showCover: true,       // 1ª e última imagem viram capa/contracapa "duras"
-    usePortrait: true,     // telas estreitas mostram 1 página; telas largas, espalhado
-    mobileScrollSupport: true,
-    flippingTime: 700,
-    maxShadowOpacity: 0.6,
-  });
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = i === 0 ? 'Capa' : i === list.length - 1 ? 'Contracapa' : `Página ${i + 1}`;
+    img.loading = i < 2 ? 'eager' : 'lazy';
+    wrap.appendChild(img);
 
-  pageFlip.loadFromImages(list);
-
-  // A lib sempre define #book com width:100% (esticando pro container) assim
-  // que é construída. Sobrescrevemos logo em seguida com um tamanho nativo
-  // fixo (nítido) e usamos CSS transform para encaixar no espaço disponível —
-  // assim ela nunca estoura a altura da tela nem depende do cálculo "stretch".
-  function applySize() {
-    const availW = bookWrapEl.clientWidth;
-    const availH = bookWrapEl.clientHeight;
-
-    // decide manualmente se cabe página dupla (espalhado) ou só uma página
-    const singleAspect = PAGE_W / PAGE_H;
-    const wantsSpread = availW / availH > singleAspect * 1.15;
-    const totalW = wantsSpread ? PAGE_W * 2 : PAGE_W;
-
-    bookEl.style.width = totalW + 'px';
-    bookEl.style.minWidth = PAGE_W + 'px';
-    bookEl.style.maxWidth = (PAGE_W * 2) + 'px';
-
-    const scale = Math.min(availW / totalW, availH / PAGE_H);
-    bookEl.style.transform = `scale(${scale})`;
-    bookScaleEl.style.width = (totalW * scale) + 'px';
-    bookScaleEl.style.height = (PAGE_H * scale) + 'px';
-
-    pageFlip.update();
-  }
-
-  function updateUI(pageIndex) {
-    const total = pageFlip.getPageCount();
-    pageNumEl.textContent = String(pageIndex + 1);
-    pageTotalEl.textContent = String(total);
-    slider.max = String(total);
-    slider.value = String(pageIndex + 1);
-    prevBtn.disabled = pageIndex <= 0;
-    nextBtn.disabled = pageIndex >= total - 1;
-    firstBtn.disabled = pageIndex <= 0;
-    lastBtn.disabled = pageIndex >= total - 1;
-  }
-
-  applySize();
-
-  pageFlip.on('init', (e) => { applySize(); updateUI(e.data.page); });
-  pageFlip.on('flip', (e) => updateUI(e.data));
-  window.addEventListener('resize', applySize);
-
-  nextBtn.addEventListener('click', () => pageFlip.flipNext());
-  prevBtn.addEventListener('click', () => pageFlip.flipPrev());
-  firstBtn.addEventListener('click', () => pageFlip.turnToPage(0));
-  lastBtn.addEventListener('click', () => pageFlip.turnToPage(pageFlip.getPageCount() - 1));
-  slider.addEventListener('change', () => pageFlip.turnToPage(parseInt(slider.value, 10) - 1));
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') pageFlip.flipNext();
-    if (e.key === 'ArrowLeft') pageFlip.flipPrev();
+    pagesEl.appendChild(wrap);
   });
 })();

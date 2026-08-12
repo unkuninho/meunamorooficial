@@ -3,37 +3,15 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Jornal Interativo</title>
+<title>Jornal</title>
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="app">
-    <header class="topbar">
-      <h1 class="masthead">Jornal</h1>
-      <div class="page-indicator"><span id="pageNum">-</span> / <span id="pageTotal">-</span></div>
-    </header>
-
-    <main class="viewer">
-      <button id="prevBtn" class="nav-btn nav-prev" aria-label="Página anterior">‹</button>
-
-      <div class="book-wrap">
-        <p id="status" class="status">Procurando páginas…</p>
-        <div class="book-scale" id="bookScale">
-          <div id="book"></div>
-        </div>
-      </div>
-
-      <button id="nextBtn" class="nav-btn nav-next" aria-label="Próxima página">›</button>
-    </main>
-
-    <footer class="toolbar">
-      <button id="firstBtn" class="tool-btn" title="Ir para a capa">⏮ Capa</button>
-      <input id="pageSlider" type="range" min="1" max="1" value="1" />
-      <button id="lastBtn" class="tool-btn" title="Ir para a contracapa">Contracapa ⏭</button>
-    </footer>
+    <p id="status" class="status">Procurando páginas…</p>
+    <div id="pages"></div>
   </div>
 
-  <script src="vendor-page-flip.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
