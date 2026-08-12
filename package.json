@@ -1,0 +1,9 @@
+{
+  "name": "jornal-folheavel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Jornal digital folheável — cada página é uma imagem da pasta raiz. Basta abrir index.html.",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
