@@ -17,7 +17,6 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 12px;
 }
 
 .status {
@@ -32,17 +31,17 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
   width: 100%;
   max-width: 1240px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
 }
 
 .page {
   width: 100%;
   max-width: 1240px;
   aspect-ratio: 1240 / 1754;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
   background: #111;
+  display: block;
 }
 
 .page img {
